@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Claude Code Knowledge Management System Installer
-# Version: 1.0.0
+# Claude Code ナレッジ管理システム インストーラー
+# バージョン: 1.0.0
 
 set -e
 
@@ -17,47 +17,47 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 log_info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
+    echo -e "${BLUE}[情報]${NC} $1"
 }
 
 log_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
+    echo -e "${GREEN}[成功]${NC} $1"
 }
 
 log_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
+    echo -e "${YELLOW}[警告]${NC} $1"
 }
 
 log_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
+    echo -e "${RED}[エラー]${NC} $1"
 }
 
-# Help function
+# ヘルプ機能
 show_help() {
     cat << EOF
-Claude Code Knowledge Management System Installer
+Claude Code ナレッジ管理システム インストーラー
 
-USAGE:
-    ./install.sh [OPTIONS]
+使用方法:
+    ./install.sh [オプション]
 
-OPTIONS:
-    --global                Install global knowledge base (run once)
-    --project [PATH]        Initialize project-specific setup
-    --update                Update global knowledge base
-    --promote-knowledge     Promote project knowledge to global
-    --help                  Show this help
+オプション:
+    --global                グローバルナレッジベースをインストール (初回のみ)
+    --project [パス]        プロジェクト固有の設定を初期化
+    --update                グローバルナレッジベースを更新
+    --promote-knowledge     プロジェクトナレッジをグローバルに昇格
+    --help                  このヘルプを表示
 
-EXAMPLES:
-    # Global installation (first time)
+使用例:
+    # グローバルインストール（初回）
     ./install.sh --global
 
-    # Initialize current project
+    # 現在のプロジェクトを初期化
     ./install.sh --project
 
-    # Initialize specific project
+    # 特定のプロジェクトを初期化
     ./install.sh --project /path/to/project
 
-    # Update global knowledge
+    # グローバルナレッジを更新
     ./install.sh --update
 
 EOF
@@ -86,22 +86,54 @@ detect_project_type() {
 
 # Global installation
 install_global() {
-    log_info "Installing global knowledge base..."
+    log_info "グローバルナレッジベースをインストール中..."
     
+    # Check if we're already in the target directory
+    if [[ "$SCRIPT_DIR" == "$GLOBAL_KNOWLEDGE_DIR" ]]; then
+        log_info "すでにグローバルナレッジディレクトリにいます"
+        
+        # Just ensure proper permissions
+        if [[ -d "$SCRIPT_DIR/scripts" ]]; then
+            chmod +x "$SCRIPT_DIR/scripts"/*.sh
+            log_success "スクリプトの権限を更新しました"
+        fi
+        
+        # Create templates in place
+        create_templates
+        
+        # Setup shell integration
+        setup_shell_integration
+        
+        log_success "グローバルインストールが完了しました！"
+        log_info "グローバルナレッジベース: $GLOBAL_KNOWLEDGE_DIR"
+        
+        # Show next steps
+        cat << EOF
+
+${GREEN}次のステップ:${NC}
+1. ターミナルを再起動するか、以下を実行: source ~/.bashrc (または ~/.zshrc)
+2. プロジェクトディレクトリに移動
+3. 実行: ~/workspace/cc-knowledge/install.sh --project
+
+EOF
+        return
+    fi
+    
+    # If not in target, do the copy (for future use if structure changes)
     # Create global directory structure
     mkdir -p "$GLOBAL_KNOWLEDGE_DIR"/{docs/{knowledge,guidelines},scripts,templates}
     
     # Copy knowledge base files
     if [[ -d "$SCRIPT_DIR/docs" ]]; then
         cp -r "$SCRIPT_DIR/docs"/* "$GLOBAL_KNOWLEDGE_DIR/docs/"
-        log_success "Knowledge base copied"
+        log_success "ナレッジベースをコピーしました"
     fi
     
     # Copy scripts
     if [[ -d "$SCRIPT_DIR/scripts" ]]; then
         cp -r "$SCRIPT_DIR/scripts"/* "$GLOBAL_KNOWLEDGE_DIR/scripts/"
         chmod +x "$GLOBAL_KNOWLEDGE_DIR/scripts"/*.sh
-        log_success "Scripts installed"
+        log_success "スクリプトをインストールしました"
     fi
     
     # Create templates
@@ -110,23 +142,23 @@ install_global() {
     # Setup shell integration
     setup_shell_integration
     
-    log_success "Global installation completed!"
-    log_info "Global knowledge base: $GLOBAL_KNOWLEDGE_DIR"
+    log_success "グローバルインストールが完了しました！"
+    log_info "グローバルナレッジベース: $GLOBAL_KNOWLEDGE_DIR"
     
     # Show next steps
     cat << EOF
 
-${GREEN}Next Steps:${NC}
-1. Restart your terminal or run: source ~/.bashrc (or ~/.zshrc)
-2. Navigate to your project directory
-3. Run: ./install.sh --project
+${GREEN}次のステップ:${NC}
+1. ターミナルを再起動するか、以下を実行: source ~/.bashrc (または ~/.zshrc)
+2. プロジェクトディレクトリに移動
+3. 実行: ./install.sh --project
 
 EOF
 }
 
 # Create command templates for different project types
 create_templates() {
-    log_info "Creating command templates..."
+    log_info "コマンドテンプレートを作成中..."
     
     # Create template directories
     mkdir -p "$GLOBAL_KNOWLEDGE_DIR/templates"/{nodejs,java,python,generic}/commands
@@ -150,12 +182,12 @@ create_templates() {
         fi
     done
     
-    log_success "Command templates created"
+    log_success "コマンドテンプレートを作成しました"
 }
 
-# Setup shell integration
+# シェル統合の設定
 setup_shell_integration() {
-    log_info "Setting up shell integration..."
+    log_info "シェル統合を設定中..."
     
     local shell_config=""
     if [[ -n "$ZSH_VERSION" ]]; then
@@ -163,13 +195,13 @@ setup_shell_integration() {
     elif [[ -n "$BASH_VERSION" ]]; then
         shell_config="$HOME/.bashrc"
     else
-        log_warning "Unknown shell, skipping automatic setup"
+        log_warning "不明なシェルです。自動設定をスキップします"
         return
     fi
     
     # Check if already configured
     if grep -q "cc-knowledge" "$shell_config" 2>/dev/null; then
-        log_info "Shell integration already configured"
+        log_info "シェル統合はすでに設定済みです"
         return
     fi
     
@@ -185,16 +217,16 @@ fi
 cd() {
     builtin cd "$@"
     if [[ -f ".claude/CLAUDE.md" ]]; then
-        echo "🔧 Claude Code environment detected"
-        echo "💡 Available commands: /design, /implement, /fix-test, /next-steps, /pr"
+        echo "🔧 Claude Code環境を検出しました"
+        echo "💡 利用可能なコマンド: /design, /implement, /fix-test, /next-steps, /pr"
         if [[ -f ".claude/knowledge/INDEX.md" ]]; then
-            echo "📚 Project-specific knowledge available"
+            echo "📚 プロジェクト固有のナレッジが利用可能です"
         fi
     fi
 }
 EOF
     
-    log_success "Shell integration configured in $shell_config"
+    log_success "$shell_config にシェル統合を設定しました"
 }
 
 # Project initialization
@@ -202,11 +234,11 @@ initialize_project() {
     local project_path=${1:-"$PWD"}
     local project_type
     
-    log_info "Initializing project at: $project_path"
+    log_info "プロジェクトを初期化中: $project_path"
     
     # Detect project type
     project_type=$(detect_project_type "$project_path")
-    log_info "Detected project type: $project_type"
+    log_info "検出されたプロジェクトタイプ: $project_type"
     
     # Create project .claude directory
     mkdir -p "$project_path/.claude"/{commands,knowledge/{patterns,lessons}}
@@ -219,7 +251,7 @@ initialize_project() {
     
     if [[ -d "$template_dir/commands" ]]; then
         cp -r "$template_dir/commands"/* "$project_path/.claude/commands/"
-        log_success "Commands copied from $project_type template"
+        log_success "$project_type テンプレートからコマンドをコピーしました"
     fi
     
     # Create project CLAUDE.md
@@ -231,23 +263,23 @@ initialize_project() {
     # Initialize auto-knowledge management
     setup_auto_knowledge_management "$project_path"
     
-    log_success "Project initialization completed!"
-    log_info "Project knowledge: $project_path/.claude/knowledge/"
+    log_success "プロジェクトの初期化が完了しました！"
+    log_info "プロジェクトナレッジ: $project_path/.claude/knowledge/"
     
     # Show project-specific info
     cat << EOF
 
-${GREEN}Project Setup Complete:${NC}
-- Commands: $project_path/.claude/commands/
-- Knowledge: $project_path/.claude/knowledge/
-- Configuration: $project_path/.claude/CLAUDE.md
+${GREEN}プロジェクト設定完了:${NC}
+- コマンド: $project_path/.claude/commands/
+- ナレッジ: $project_path/.claude/knowledge/
+- 設定: $project_path/.claude/CLAUDE.md
 
-${BLUE}Available Commands:${NC}
-- /design       - Create design documents
-- /implement    - TDD implementation
-- /fix-test     - Fix test issues
-- /next-steps   - Generate next steps
-- /pr           - Create PR documentation
+${BLUE}利用可能なコマンド:${NC}
+- /design       - 設計ドキュメントを作成
+- /implement    - TDD実装
+- /fix-test     - テストの問題を修正
+- /next-steps   - 次のステップを生成
+- /pr           - PRドキュメントを作成
 
 EOF
 }
@@ -294,7 +326,7 @@ Add project-specific overrides below:
 
 EOF
     
-    log_success "Created project CLAUDE.md"
+    log_success "プロジェクトCLAUDE.mdを作成しました"
 }
 
 # Create project knowledge index
@@ -333,7 +365,7 @@ This directory contains project-specific knowledge and patterns that are unique 
 *This index is automatically maintained*
 EOF
     
-    log_success "Created project knowledge index"
+    log_success "プロジェクトナレッジインデックスを作成しました"
 }
 
 # Setup auto-knowledge management hooks
@@ -343,21 +375,21 @@ setup_auto_knowledge_management() {
     # Create knowledge management script
     cat > "$project_path/.claude/scripts/auto-knowledge.sh" << 'EOF'
 #!/bin/bash
-# Auto-Knowledge Management Script
-# This script is called automatically by custom commands
+# 自動ナレッジ管理スクリプト
+# このスクリプトはカスタムコマンドから自動的に呼び出されます
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 GLOBAL_KNOWLEDGE="$HOME/workspace/cc-knowledge/docs/knowledge"
 
-# Analyze content and determine scope (global vs project-specific)
+# コンテンツを分析してスコープを決定（グローバル vs プロジェクト固有）
 analyze_knowledge_scope() {
     local content="$1"
     local file_path="$2"
     
-    # Keywords that indicate global applicability
+    # グローバル適用可能性を示すキーワード
     local global_keywords=("refactoring" "testing" "design-pattern" "architecture" "best-practice")
-    # Keywords that indicate project-specific
+    # プロジェクト固有を示すキーワード
     local project_keywords=("business-rule" "domain-specific" "legacy-code" "migration")
     
     local global_score=0
@@ -382,7 +414,7 @@ analyze_knowledge_scope() {
     fi
 }
 
-# Store knowledge automatically
+# ナレッジを自動保存
 store_knowledge() {
     local title="$1"
     local content="$2"
@@ -409,17 +441,17 @@ domain: \"auto-generated\"
     
     if [[ "$scope" == "global" ]]; then
         echo "$frontmatter$content" > "$GLOBAL_KNOWLEDGE/$filename.md"
-        echo "📚 Stored in global knowledge: $filename.md"
+        echo "📚 グローバルナレッジに保存: $filename.md"
     else
         echo "$frontmatter$content" > "$PROJECT_ROOT/.claude/knowledge/patterns/$filename.md"
-        echo "🏠 Stored in project knowledge: $filename.md"
+        echo "🏠 プロジェクトナレッジに保存: $filename.md"
     fi
     
-    # Update indices
+    # インデックスを更新
     update_knowledge_indices
 }
 
-# Update knowledge indices
+# ナレッジインデックスを更新
 update_knowledge_indices() {
     # Update project index
     local pattern_count=$(find "$PROJECT_ROOT/.claude/knowledge/patterns" -name "*.md" 2>/dev/null | wc -l)
@@ -429,7 +461,7 @@ update_knowledge_indices() {
     sed -i "s/\*\*Total Lessons\*\*: [0-9]*/\*\*Total Lessons\*\*: $lesson_count/" "$PROJECT_ROOT/.claude/knowledge/INDEX.md" 2>/dev/null || true
 }
 
-# Check for promotion candidates
+# 昇格候補を確認
 check_promotion_candidates() {
     find "$PROJECT_ROOT/.claude/knowledge/patterns" -name "*.md" -type f | while read file; do
         local success_rate=$(grep "^success_rate:" "$file" | sed 's/.*"\([0-9]*\)%".*/\1/')
@@ -437,7 +469,7 @@ check_promotion_candidates() {
         
         # Simple promotion logic (can be enhanced)
         if [[ "$success_rate" -ge 90 ]] && [[ -n "$created_date" ]]; then
-            echo "🎯 Promotion candidate: $(basename "$file")"
+            echo "🎯 昇格候補: $(basename "$file")"
             # Auto-promote logic can be added here
         fi
     done
@@ -453,32 +485,32 @@ EOF
     chmod +x "$project_path/.claude/scripts/auto-knowledge.sh"
     mkdir -p "$project_path/.claude/scripts"
     
-    log_success "Auto-knowledge management setup completed"
+    log_success "自動ナレッジ管理の設定が完了しました"
 }
 
-# Update global knowledge base
+# グローバルナレッジベースの更新
 update_global() {
-    log_info "Updating global knowledge base..."
+    log_info "グローバルナレッジベースを更新中..."
     
     if [[ ! -d "$GLOBAL_KNOWLEDGE_DIR" ]]; then
-        log_error "Global knowledge base not found. Run --global first."
+        log_error "グローバルナレッジベースが見つかりません。まず --global を実行してください。"
         exit 1
     fi
     
     # Update knowledge files
     if [[ -d "$SCRIPT_DIR/docs" ]]; then
         cp -r "$SCRIPT_DIR/docs"/* "$GLOBAL_KNOWLEDGE_DIR/docs/"
-        log_success "Knowledge base updated"
+        log_success "ナレッジベースを更新しました"
     fi
     
     # Update scripts
     if [[ -d "$SCRIPT_DIR/scripts" ]]; then
         cp -r "$SCRIPT_DIR/scripts"/* "$GLOBAL_KNOWLEDGE_DIR/scripts/"
         chmod +x "$GLOBAL_KNOWLEDGE_DIR/scripts"/*.sh
-        log_success "Scripts updated"
+        log_success "スクリプトを更新しました"
     fi
     
-    log_success "Global update completed!"
+    log_success "グローバル更新が完了しました！"
 }
 
 # Main execution
