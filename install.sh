@@ -372,6 +372,9 @@ EOF
 setup_auto_knowledge_management() {
     local project_path="$1"
     
+    # Create scripts directory first
+    mkdir -p "$project_path/.claude/scripts"
+    
     # Create knowledge management script
     cat > "$project_path/.claude/scripts/auto-knowledge.sh" << 'EOF'
 #!/bin/bash
@@ -483,7 +486,6 @@ export -f check_promotion_candidates
 EOF
     
     chmod +x "$project_path/.claude/scripts/auto-knowledge.sh"
-    mkdir -p "$project_path/.claude/scripts"
     
     log_success "自動ナレッジ管理の設定が完了しました"
 }
