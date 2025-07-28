@@ -436,25 +436,3 @@ graph TB
 2. 🔴 **必須**: createUser - UserAlreadyExistsExceptionのテスト
 3. 🟡 **推奨**: createUser - 空文字列ユーザー名のテスト
 4. 🟡 **推奨**: findUserById - nullIDのテスト（※nullable型引数のみ）
-# ===== Claude Code 自動保存システム統合 =====
-# Phase 2: カスタムコマンド統合（自動追加）
-
-# 統合条件チェック
-if [[ -f "$HOME/workspace/cc-knowledge/scripts/auto-save-core.sh" ]]; then
-    # ファイル生成が確認できた場合のみ自動保存を実行
-    if [[ -n "$generated_file_path" && -n "$generated_content" ]]; then
-        # 自動保存システムの読み込み（エラー時は無視）
-        source "$HOME/workspace/cc-knowledge/scripts/auto-save-core.sh" 2>/dev/null || {
-            echo "# 注意: 自動保存システムが利用できません" >&2
-        }
-        
-        # 自動保存の実行
-        if command -v auto_save_generated_file >/dev/null 2>&1; then
-            auto_save_generated_file "$generated_file_path" "$generated_content" "test-review" 2>/dev/null || {
-                echo "# 自動保存に失敗しましたが、処理を継続します" >&2
-            }
-        fi
-    fi
-fi
-
-# ===== 自動保存システム統合終了 =====

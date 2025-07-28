@@ -203,12 +203,7 @@
      - 同名ファイルが存在する場合はバックアップを作成
      - 保存完了後にファイルパスを表示
 
-12. **自動保存システム統合**
-   - 生成された設計書の自動保存処理
-   - ファイル分類（ドキュメント）と適切な場所への保存
-   - macOS通知とビューアー連携
-
-13. **完了**
+12. **完了**
 
 ### 進捗表示
 ```
@@ -248,50 +243,3 @@
 - 設計依頼書ファイルが見つからない場合：エラーメッセージを表示して終了
 - 必須項目（チケット番号、機能名など）が不足している場合：具体的な不足項目を提示
 - 設計の焦点が指定されていない場合：デフォルトで主要な設計を網羅的に作成
-
-## 自動保存システム統合
-
-このコマンドは Claude Code 自動保存システムと統合されており、生成された設計書は自動的に以下の場所に保存されます：
-
-### 自動保存先
-- **メイン保存先**: `~/workspace/tasks/{チケット番号}/design/{機能名}-design.md`
-- **バックアップ保存先**: `~/Documents/claude-outputs/{日付}/{機能名}-design.md`
-- **セッション統合**: `~/workspace/tasks/{チケット番号}/sessions/{セッションID}/reports/`
-
-### 自動実行される処理
-1. **ファイル分類**: 設計書として自動分類（document カテゴリ）
-2. **メタデータ生成**: 作成日時、コマンド情報、ファイルサイズ等
-3. **通知送信**: macOS通知「新しいドキュメント: {ファイル名}」
-4. **ビューアー連携**: Claude Outputs Viewer への自動通知（利用可能な場合）
-5. **統計記録**: 保存統計とログファイルへの記録
-
-### 統合実装詳細
-```bash
-# コマンド実行完了時に自動実行される処理
-source ~/workspace/cc-knowledge/scripts/auto-save-integration.sh
-integrate_auto_save "$generated_design_file" "$design_content" "design" "$additional_metadata"
-```
-
-この統合により、設計書の保存やファイル管理を意識することなく、設計作業に集中できます。
-# ===== Claude Code 自動保存システム統合 =====
-# Phase 2: カスタムコマンド統合（自動追加）
-
-# 統合条件チェック
-if [[ -f "$HOME/workspace/cc-knowledge/scripts/auto-save-core.sh" ]]; then
-    # ファイル生成が確認できた場合のみ自動保存を実行
-    if [[ -n "$generated_file_path" && -n "$generated_content" ]]; then
-        # 自動保存システムの読み込み（エラー時は無視）
-        source "$HOME/workspace/cc-knowledge/scripts/auto-save-core.sh" 2>/dev/null || {
-            echo "# 注意: 自動保存システムが利用できません" >&2
-        }
-        
-        # 自動保存の実行
-        if command -v auto_save_generated_file >/dev/null 2>&1; then
-            auto_save_generated_file "$generated_file_path" "$generated_content" "design" 2>/dev/null || {
-                echo "# 自動保存に失敗しましたが、処理を継続します" >&2
-            }
-        fi
-    fi
-fi
-
-# ===== 自動保存システム統合終了 =====

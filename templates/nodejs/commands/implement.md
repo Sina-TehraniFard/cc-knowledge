@@ -156,13 +156,7 @@
    - 作成・修正したファイルに応じて適切なフォーマッタを実行
    - エラーがある場合は警告を表示
 
-9. **自動保存システム統合**
-   - 実装レポートの自動保存処理
-   - ファイル分類（ナレッジ vs ドキュメント）と適切な場所への保存
-   - macOS通知とビューアー連携
-   - 作成されたソースコード・テストファイルの追跡
-
-10. **完了**
+9. **完了**
 実装レポートの作成とコード整形が完了しました。
 
 ### 進捗表示
@@ -224,25 +218,3 @@
 - 設計内容が不明確な場合：具体的な質問を提示
 - テストが失敗し続ける場合：問題の詳細を報告し、アドバイスを求める
 - 既存コードとの競合：競合内容を明示し、解決策を提案
-# ===== Claude Code 自動保存システム統合 =====
-# Phase 2: カスタムコマンド統合（自動追加）
-
-# 統合条件チェック
-if [[ -f "$HOME/workspace/cc-knowledge/scripts/auto-save-core.sh" ]]; then
-    # ファイル生成が確認できた場合のみ自動保存を実行
-    if [[ -n "$generated_file_path" && -n "$generated_content" ]]; then
-        # 自動保存システムの読み込み（エラー時は無視）
-        source "$HOME/workspace/cc-knowledge/scripts/auto-save-core.sh" 2>/dev/null || {
-            echo "# 注意: 自動保存システムが利用できません" >&2
-        }
-        
-        # 自動保存の実行
-        if command -v auto_save_generated_file >/dev/null 2>&1; then
-            auto_save_generated_file "$generated_file_path" "$generated_content" "implement" 2>/dev/null || {
-                echo "# 自動保存に失敗しましたが、処理を継続します" >&2
-            }
-        fi
-    fi
-fi
-
-# ===== 自動保存システム統合終了 =====
