@@ -43,9 +43,9 @@ echo ""
 
 # Step 3: Project Initialization
 echo -e "${YELLOW}Step 3: Project Initialization${NC}"
-echo "Running: ~/workspace/yesod-claude-code/tehrani/install.sh --project"
+echo "Running: ~/workspace/cc-knowledge/User/install.sh --project"
 echo ""
-~/workspace/yesod-claude-code/tehrani/install.sh --project
+~/workspace/cc-knowledge/User/install.sh --project
 echo ""
 
 # Step 4: Show Results

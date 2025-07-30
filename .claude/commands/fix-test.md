@@ -102,7 +102,7 @@ fi
    - 今後の推奨改善点
    - レポートファイルの保存:
      - チケット番号: ブランチ名やファイルパスから抽出
-     - 保存先: `~/workspace/tasks/{チケット番号}/fix-test/`
+     - 保存先: `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)/テスト修正レポート.md`
      - ファイル名: `{テストクラス名}-fix-report.md`
 
 6. **自動ナレッジ蓄積**

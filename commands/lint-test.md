@@ -35,8 +35,8 @@
 ## 出力ファイル
 | ファイルタイプ | パス | 説明 |
 |--------------|------|------|
-| レポート | `~/workspace/tasks/{チケット番号}/reports/lint-{テストクラス名}-report.md` | 準拠チェック結果の詳細レポート |
-| ログ | `~/workspace/tasks/{チケット番号}/` | 実行ログとエラー情報 |
+| レポート | `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)/lint-{テストクラス名}-report.md` | 準拠チェック結果の詳細レポート |
+| ログ | `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)/` | 実行ログとエラー情報 |
 
 ## プロンプト
 まず、テストガイドラインを読み込んでから、{TestCode or TestFilePath} がガイドラインに沿っているかを確認してください。
@@ -71,7 +71,7 @@
 5. **レポートファイルの生成**
    - チケット番号の取得: ブランチ名やファイルパスから抽出
    - ファイル名: `lint-{テストクラス名}-report.md`
-   - 保存先: `~/workspace/tasks/{チケット番号}/reports/`
+   - 保存先: `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)`
    - レポート形式:
      ```markdown
      # Lintチェックレポート: {テストクラス名}

@@ -231,7 +231,7 @@
    - ファイル名: 
      - 単体テスト観点: `{テストクラス名}-unit-review.md`
      - シナリオテスト観点: `{テストクラス名}-scenario-review.md`
-   - 保存先: `~/workspace/tasks/{チケット番号}/test-review/`
+   - 保存先: `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)`
    - 以下の構成でマークダウンファイルを生成：
      1. **概要とテストの健全性診断**
         - テストクラスの概要
@@ -342,7 +342,7 @@
   - 括弧や引用符はMermaidパーサーエラーの頻繁な原因
 
 11. **ファイル保存時の処理**
-    - 保存先ディレクトリ: `~/workspace/tasks/{チケット番号}/test-review/`
+    - 保存先ディレクトリ: `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)`
     - ファイル名: 
       - 単体テスト観点: `{テストクラス名}-unit-review.md`
       - シナリオテスト観点: `{テストクラス名}-scenario-review.md`

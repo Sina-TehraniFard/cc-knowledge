@@ -13,10 +13,10 @@
 ### 例
 ```bash
 # 基本使用方法
-/implement ~/workspace/tasks/TASK-15711/group-deletion-account-dependency-design.md
+/implement /Users/$(whoami)/Documents/claude-outputs/TASK-15711/group-deletion-account-dependency-design.md
 
 # タグ付き実行
-/implement @tdd ./docs/design/new-feature-design.md
+/implement @tdd ./docsnew-feature-design.md
 /implement @api ~/workspace/azure-connector-design.md
 /implement @security @tdd ~/workspace/saml-integration-design.md
 ```
@@ -37,10 +37,10 @@
 ## 出力ファイル
 | ファイルタイプ | パス | 説明 |
 |--------------|------|------|
-| 実装レポート | `~/workspace/tasks/{チケット番号}/reports/implementation-{設計名}-report.md` | 実装内容の詳細レポート |
+| 実装レポート | `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)/実装レポート-{設計名}.md` | 実装内容の詳細レポート |
 | テストファイル | プロジェクト内のテストディレクトリ | 作成したテストコード |
 | 実装ファイル | プロジェクト内のソースディレクトリ | 実装したプロダクションコード |
-| TDD記録 | `~/workspace/tasks/{チケット番号}/implementations/tdd-cycle-{機能名}.md` | TDDサイクルの詳細記録 |
+| TDD記録 | `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)/tdd-cycle-{機能名}.md` | TDDサイクルの詳細記録 |
 
 ## プロンプト
 指定された設計ドキュメントを読み込み、以下の手順でTDDに基づいた実装を行ってください。
@@ -122,7 +122,7 @@
    - 実装レポートを自動的に作成
    - チケット番号の取得: ブランチ名やファイルパスから抽出
    - ファイル名: `implementation-report.md`（タイムスタンプを含めない）
-   - 保存先: `~/workspace/tasks/{チケット番号}/implementation/`
+   - 保存先: `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)/implementation/`
    - 以下の構成でマークダウンファイルを生成:
      1. **概要**
         - 実装した機能の概要
@@ -208,7 +208,7 @@
 - セキュリティに関わる実装は特に慎重に行う
 - **実装完了時は必ず実装レポートを出力する（省略不可）**
 - **実装レポートのファイル名に日付・タイムスタンプを含めない（常に`implementation-report.md`）**
-- **実装レポートの保存先**: `~/workspace/tasks/{チケット番号}/implementation/`
+- **実装レポートの保存先**: `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)/implementation/`
 - **テスト作成時は[テストガイドライン](../docs/guidelines/testing.md)を必ず参照**
 - **SDKの機能を確認し、車輪の再発明を避ける**
 - **設計と実装の差異は必ず記録し、理由を明確にする**

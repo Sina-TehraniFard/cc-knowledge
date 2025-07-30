@@ -14,7 +14,7 @@
 3. テスト結果の収集
 4. PR用ドキュメントの生成
 5. 整合性チェックの実行
-6. ~/workspace/tasks/チケット番号/generated-pr.mdに保存
+6. /Users/$(whoami)/Documents/claude-outputs/チケット番号/generated-pr.mdに保存
 
 ## プロンプト
 プルリクエスト用のドキュメントを生成してください。以下の手順で実行してください：
@@ -65,9 +65,9 @@
 
 5. **出力**
    - チケット番号の取得: ブランチ名やファイルパスから抽出
-   - ディレクトリ作成: `~/workspace/tasks/{チケット番号}/reports/`
+   - ディレクトリ作成: `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)`
    - ファイル名: `generated-pr.md`
-   - 保存先: `~/workspace/tasks/{チケット番号}/reports/generated-pr.md`
+   - 保存先: `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)/generated-pr.md`
    - マークダウン形式で整形
    - コピー&ペースト可能な状態で出力
 

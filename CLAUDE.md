@@ -34,38 +34,36 @@
 
 - **パス混在問題の防止**:
   - ❌ **絶対禁止**: `/Users/username/workspace/~/workspace/...` のような混在パス
-  - ✅ **正解**: `~/workspace/tasks/{チケット番号}/`
+  - ✅ **正解**: `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)/`
   - **検証方法**: ファイル作成時に異常パスを検出
   - **修正手順**: 不正ファイル移動→空ディレクトリ削除→パス参照更新
 
 - **セッション指向ディレクトリ構造を強制使用**：
-  - **基本パス**: `~/workspace/tasks/{チケット番号}/sessions/{YYYY-MM-DD_HH-mm}/`
+  - **基本パス**: `/Users/$(whoami)/Documents/claude-outputs/{YYYY-MM-DD}/{{ファイル説明日本語}}.md`
   - **自動セッション生成**: 新しいファイル出力時に現在時刻でセッションディレクトリ作成
-  - **最新リンク**: `~/workspace/tasks/{チケット番号}/latest/` → 最新セッション
+  - **日付ベース**: ファイル名で内容を表現、同日内での管理
   - **対象**: Write/Taskツールでのドキュメント・レポート・設計書・分析結果の作成時
   - **除外**: ソースコードファイル、設定ファイル、明示的な絶対パス指定時
-  - チケット番号が取得できない場合: `~/workspace/tasks/TASK-DEFAULT/`
+  - チケット番号が取得できない場合: `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)/`
 
-- **セッション内構造**：
-  - `next-steps/` - Next Steps実行結果
-  - `reports/` - 分析・調査レポート  
-  - `implementations/` - 実装・修正ファイル
-  - `session-summary.md` - セッション概要（自動生成）
+- **パス構造簡略化**：
+  - 日付ベースのシンプル構造
+  - ファイル名で内容を特定しやすく
 
 - **命名規則統一**：
-  - **レポート**: `{目的}-{対象}-report-{連番}.md`
-  - **Next Steps**: `next-steps-{step番号}-{内容要約}.md`
-  - **実装**: `{type}-{component}-{version}.{ext}`
+  - **レポート**: `{{目的・対象}}-レポート.md`
+  - **Next Steps**: `{{ステップ内容}}-ガイド.md`
+  - **実装**: `{{機能名}}-実装レポート.md`
 
-- **セッション管理機能**：
-  - **スクリプト**: `~/workspace/cc-knowledge/scripts/session-manager.sh`
-  - **セッション生成**: `source ~/workspace/cc-knowledge/scripts/session-manager.sh && get_or_create_session {チケット番号}`
-  - **5分以内の既存セッション再利用**: 同日の5分以内セッションは統合
+- **ファイル管理機能**：
+  - **基本パス**: `/Users/$(whoami)/Documents/claude-outputs/`
+  - **日付自動適用**: `$(date +%Y-%m-%d)`
+  - **同日ファイルは既存ディレクトリに追加**
 
 - **パス決定の強制優先順位**：
   1. **明示的な絶対パス指定**: そのまま使用
   2. **カスタムコマンドルール**: カスタムコマンドが指定した場合
-  3. **ガイドラインルール（必須）**: ドキュメント・レポート・分析結果作成時
+  3. **ガイドラインルール（必須）**: ドキュメント・レポート・分析結果作成時は `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)/` を使用
   4. **プロジェクト構造**: ソースコード・設定ファイル作成時
 
 - **自動適用の実装**：
@@ -73,8 +71,8 @@
   - 拡張子が `.md`, `.txt`, `.json` (レポート用)の場合は自動適用
   - チケット番号は `git branch --show-current | grep -oE '[A-Z]+-[0-9]+' | head -1` で取得
 
-- **ナレッジ蓄積の自動化**：
-  - **学習効果の高い技法・パターン**は `~/workspace/cc-knowledge/docs/knowledge/` に永続保存
+- **ナレッジ蓄積の維持**：
+  - **学習効果の高い技法・パターン**は `~/workspace/cc-knowledge/docs/knowledge/` に永続保存（変更なし）
   - **トリガー**: 「学習効果」「技法」「パターン」「ベストプラクティス」の言及時
   - **対象**: リファクタリング技法、アーキテクチャパターン、問題解決手法
   - **目的**: プロジェクト間での知見共有と再利用促進
@@ -149,7 +147,25 @@
 
 作業効率化のためのカスタムコマンドが利用可能です：
 
-### 主要コマンド
+### 統合ワークフロー（包括的開発プロセス）
+- `/integrated-requirements [要件概要]` - EARS記法で要件定義書を生成
+- `/integrated-design [要件ファイル]` - 技術設計書・アーキテクチャ図を生成
+- `/integrated-tasks [設計ファイル]` - 実装タスクの分解・優先度付け
+- `/integrated-implement [タスクファイル]` - タスクベース実装実行
+
+### TDDフェーズ別コマンド（段階的テスト駆動開発）
+- `/tdd-red [テスト対象]` - Redフェーズ（意図的失敗テスト作成）
+- `/tdd-green [失敗テスト]` - Greenフェーズ（最小実装）
+- `/tdd-refactor [実装コード]` - Refactorフェーズ（品質向上）
+- `/tdd-verify-complete [コード]` - TDDサイクル完了検証
+
+### 逆エンジニアリングコマンド（既存コード分析）
+- `/rev-requirements [コードパス]` - 既存コードから要件抽出
+- `/rev-design [コードパス]` - 既存コードから設計書生成
+- `/rev-specs [コードパス]` - 既存コードから仕様書生成
+- `/rev-tasks [コードパス]` - 既存コードからタスク抽出
+
+### 既存主要コマンド
 - `/design [設計ファイル]` - 設計依頼書から設計書を生成
 - `/implement [タグ] <設計ファイル>` - TDDサイクルで設計から実装を自動実行
 - `/fix-test [タグ] <ファイル>` - テストコードを自動修正
@@ -169,10 +185,15 @@
 
 #### 基本タグ
 - `@tdd` - TDDサイクル強制実行（Red-Green-Refactor）
+- `@tdd-red` - Redフェーズ（意図的失敗テスト）専用実行
+- `@tdd-green` - Greenフェーズ（最小実装）専用実行
+- `@tdd-refactor` - Refactorフェーズ（品質向上）専用実行
 - `@test-fix` - 段階的テスト改善（高成功率実績パターン）
 - `@refactor` - 安全なリファクタリング（既存テスト保持）
 - `@api` - API設計・変更（影響範囲分析+後方互換性）
 - `@security` - セキュリティ要件考慮ワークフロー
+- `@integrated` - 統合ワークフロー実行（要件→設計→タスク→実装）
+- `@reverse` - 逆エンジニアリング実行（既存コード分析）
 
 詳細は [コマンド一覧](commands/) を参照してください。
 
@@ -182,7 +203,15 @@
 - `docs/` - プロジェクトドキュメント
   - `guidelines/` - 開発ガイドライン
   - `knowledge/` - ナレッジベース（技術パターン集）
+  - `spec/` - 要件仕様書（EARS記法）
+  - `design/` - 技術設計書・アーキテクチャ図
+  - `tasks/` - 実装タスク定義
 - `commands/` - カスタムコマンド定義
+- `templates/` - 各種テンプレート
+  - `requirements/` - EARS記法要件テンプレート
+  - `design/` - 設計書テンプレート
+  - `tdd/` - TDDフェーズ別テンプレート
+- `reverse/` - 逆エンジニアリング結果
 - `scripts/` - 共通スクリプト
 
 詳細は [ナレッジベース INDEX](docsnowledge/INDEX.md) を参照してください。

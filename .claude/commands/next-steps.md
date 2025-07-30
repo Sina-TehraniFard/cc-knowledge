@@ -101,7 +101,7 @@
    
    📍 監視中のディレクトリ:
      - プロジェクトルート
-     - ~/workspace/tasks/
+     - /Users/$(whoami)/Documents/claude-outputs/
    
    [タスク実行内容...]
    
@@ -138,7 +138,7 @@
    
    ### 📍 カテゴリ別成果物
    Reports (N ファイル):
-     ⭐ ~/workspace/tasks/[ticket-number]/[report].md
+     ⭐ /Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)/[report].md
      
    Tests (N ファイル):
      - backend/core/.../[TestClass].kt
@@ -218,7 +218,7 @@
 - **削除ファイル**: タスク実行中に削除されたファイル（通常は少ない）
 
 #### ファイルカテゴリ分類
-- **Reports**: ~/workspace/tasks/ 配下のMarkdownファイル
+- **Reports**: /Users/$(whoami)/Documents/claude-outputs/ 配下のMarkdownファイル
 - **Tests**: テスト関連ファイル（*Test.kt, *Spec.kt など）
 - **Source**: プロダクションコード（.kt, .java など）
 - **Config**: 設定ファイル（.json, .yaml, .properties など）

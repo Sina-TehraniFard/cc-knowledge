@@ -1,4 +1,4 @@
-# design - 設計依頼書をもとに、設計書を生成します
+``# design - 設計依頼書をもとに、設計書を生成します
 
 ## 概要
 設計依頼書の内容をもとに、設計の焦点に応じた詳細な設計ドキュメントを生成します。
@@ -11,30 +11,30 @@
 ### 例
 ```
 /design                                                              # デフォルトパスを使用
-/design ~/workspace/tasks/TASK-12345/design-request.md              # 特定のパスを指定
+/design /Users/$(whoami)/Documents/claude-outputs/TASK-12345設計依頼書.md              # 特定のパスを指定
 /design ./docs/design-request.md                                    # 相対パスで指定
 ```
 
 ## 実行内容
-1. 設計依頼書ファイルの内容を読み込み（パス指定がない場合は `~/workspace/tasks/design.md` を使用）
+1. 設計依頼書ファイルの内容を読み込み（パス指定がない場合は `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)/設計依頼書.md` を使用）
 2. 設計の焦点（チェックされた項目）の確認
 3. 焦点に応じた設計ドキュメントの作成
 4. 必要に応じてMermaid図の生成
-5. `~/workspace/tasks/{チケット番号}/design` 配下に保存
+5. `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)` 配下に保存
 
 ## 出力ファイル
 | ファイルタイプ | パス | 説明 |
 |--------------|------|------|
-| 設計書 | `~/workspace/tasks/{チケット番号}/design/{機能名}-design.md` | 詳細設計ドキュメント |
-| 技術調査 | `~/workspace/tasks/{チケット番号}/design/technical-research.md` | SDK/API調査結果（必要時） |
+| 設計書 | `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)/{機能名}-設計書.md` | 詳細設計ドキュメント |
+| 技術調査 | `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)/技術調査レポート.md` | SDK/API調査結果（必要時） |
 
 ## プロンプト
 
-指定された設計依頼書（デフォルト: ~/workspace/tasks/design.md）の内容を読み込み、以下の手順で設計ドキュメントを作成してください：
+指定された設計依頼書（デフォルト: /Users/$(whoami)/Documents/claude-outputs/design.md）の内容を読み込み、以下の手順で設計ドキュメントを作成してください：
 
-1. **設計依頼書ファイルの読み込み**
+1. **設計依頼書ファイルの読み込み**````
    - コマンド引数でパスが指定された場合はそのファイルを使用
-   - 指定がない場合は `~/workspace/tasks/design.md` を使用
+   - 指定がない場合は `/Users/$(whoami)/Documents/claude-outputs/design.md` を使用
    - ファイルが存在することを確認
    - 内容を読み込んで分析
    - チケット番号、機能名、要件を抽出
@@ -196,8 +196,8 @@
 
 11. **最終出力**
    - チケット番号の取得: ブランチ名やファイルパスから抽出
-   - ファイル名: `{機能名}-design.md`
-   - 保存先: `~/workspace/tasks/{チケット番号}/design/`
+   - ファイル名: `{機能名}-設計書.md`
+   - 保存先: `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)`
    - ファイル保存時の処理:
      - 保存先ディレクトリが存在しない場合は作成
      - 同名ファイルが存在する場合はバックアップを作成

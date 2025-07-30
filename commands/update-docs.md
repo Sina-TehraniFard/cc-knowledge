@@ -184,7 +184,7 @@ Edit(filePath, oldContent, newContent)
 
 ✅ ステップ 3 完了
    実行時間: 3.2秒
-   出力: ~/workspace/tasks/TASK-12345/doc-updates/comment-update-report.md
+   出力: /Users/$(whoami)/Documents/claude-outputs/TASK-12345comment-update-report.md
 ========================================
 ✅ update-docs 完了
 ========================================
@@ -198,7 +198,7 @@ Edit(filePath, oldContent, newContent)
 
 #### レポートファイル形式
 - **ファイル名**: `comment-update-report.md`
-- **保存先**: `~/workspace/tasks/{チケット番号}/doc-updates/`
+- **保存先**: `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)`
 - **内容**:
 ```markdown
 # コメント・ドキュメント更新レポート
@@ -317,7 +317,7 @@ fun getUser(name: String, id: Long): User
 ## 出力ファイル
 | ファイルタイプ | パス | 説明 |
 |--------------|------|------|
-| レポート | `~/workspace/tasks/{チケット番号}/doc-updates/comment-update-report.md` | 更新内容の詳細レポート |
+| レポート | `/Users/$(whoami)/Documents/claude-outputs/$(date +%Y-%m-%d)/comment-update-report.md` | 更新内容の詳細レポート |
 
 **重要**: このコマンドは変更を直接ファイルに適用します。実行前に必ず変更内容を確認し、必要に応じてバックアップを取ってください。
 # ===== Claude Code 自動保存システム統合 =====
