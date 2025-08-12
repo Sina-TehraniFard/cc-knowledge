@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "last_update": "2025-07-30T18:14:41+09:00",
+  "last_update": "2025-08-02T19:27:57+09:00",
   "output_path": "/Users/$(whoami)/Documents/claude-outputs",
   "backup_enabled": true,
   "auto_japanese_filenames": true

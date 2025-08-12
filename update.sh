@@ -458,8 +458,13 @@ sync_to_project() {
     
     # 単一ファイルの同期
     local sync_files=(
-        "CLAUDE.md"
         "update.sh"
+    )
+    
+    # テンプレートからの自動配置ファイル
+    local template_files=(
+        "templates/universal/CLAUDE.md:CLAUDE.md"
+        "templates/universal/basic-guidelines.md:docs/guidelines/basic-guidelines.md"
     )
     
     if [[ "$DRY_RUN" == "true" ]]; then
@@ -469,6 +474,10 @@ sync_to_project() {
         done
         for file in "${sync_files[@]}"; do
             log_info "  - $file"
+        done
+        for template in "${template_files[@]}"; do
+            local target_file="${template#*:}"
+            log_info "  - $target_file (テンプレートから自動配置)"
         done
         return 0
     fi
@@ -482,7 +491,8 @@ sync_to_project() {
         echo -e "  - templates/ (各種テンプレート)"
         echo -e "  - docs/guidelines/ (開発ガイドライン)"
         echo -e "  - docs/knowledge/ (ナレッジベース)"
-        echo -e "  - CLAUDE.md (メインガイドライン)"
+        echo -e "  - CLAUDE.md (汎用テンプレートから自動配置)"
+        echo -e "  - docs/guidelines/basic-guidelines.md (汎用テンプレートから自動配置)"
         echo -e "  - update.sh (このスクリプト)\n"
         
         echo -n "既存のファイルは上書きされます。続行しますか？ (y/N): "
@@ -558,14 +568,39 @@ sync_to_project() {
         log_info ".claudeディレクトリを作成しました"
     fi
     
+    # テンプレートファイルの配置
+    for template in "${template_files[@]}"; do
+        local source_file="${template%:*}"
+        local target_file="${template#*:}"
+        local full_source_path="$cc_knowledge_expanded/$source_file"
+        local full_target_path="$current_dir/$target_file"
+        
+        if [[ -f "$full_source_path" ]]; then
+            log_info "テンプレート配置: $target_file"
+            
+            # 親ディレクトリを作成
+            mkdir -p "$(dirname "$full_target_path")"
+            
+            if cp "$full_source_path" "$full_target_path"; then
+                ((sync_count++))
+            else
+                ((fail_count++))
+                log_error "テンプレート配置失敗: $target_file"
+            fi
+        else
+            log_warning "テンプレートファイルが見つかりません: $full_source_path"
+        fi
+    done
+    
     # 同期情報ファイルの作成
     cat > "$current_dir/.claude/.sync-info" << EOF
 {
     "last_sync": "$(date -Iseconds)",
     "source": "$cc_knowledge_expanded",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "sync_count": $sync_count,
-    "fail_count": $fail_count
+    "fail_count": $fail_count,
+    "template_auto_deployment": true
 }
 EOF
     
